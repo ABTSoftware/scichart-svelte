@@ -1,6 +1,6 @@
 {
     "name": "scichart-svelte",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "description": "Official Svelte 5 component wrapper for SciChart.js. High-performance WebGL/WebGPU charts for real-time data streams and large datasets, with TypeScript support.",
     "homepage": "https://www.scichart.com/javascript-chart-features/",
     "author": "SciChart Ltd",
