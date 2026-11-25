@@ -1,0 +1,25 @@
+{
+    "name": "scichart-svelte-vite-demo",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "description": "SciChart.js + scichart-svelte demo on Vite 8, Svelte 5 and TypeScript (client-only)",
+    "scripts": {
+        "copyWasm": "node scripts/copy-wasm.mjs public",
+        "dev": "npm run copyWasm && vite",
+        "build": "npm run copyWasm && npm run check && vite build",
+        "preview": "vite preview",
+        "check": "svelte-check --tsconfig ./tsconfig.json --fail-on-warnings"
+    },
+    "dependencies": {
+        "scichart": "6.0.13",
+        "scichart-svelte": "file:../..",
+        "svelte": "5.57.3"
+    },
+    "devDependencies": {
+        "@sveltejs/vite-plugin-svelte": "7.3.1",
+        "svelte-check": "4.7.8",
+        "typescript": "6.0.3",
+        "vite": "8.3.8"
+    }
+}

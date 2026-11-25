@@ -1,0 +1,37 @@
+node_modules
+.DS_Store
+Thumbs.db
+
+# Output
+/.svelte-kit
+/build
+/dist
+/storybook-static
+*.tgz
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# wasm copied into static/ (and into the demos) by scripts/copy-wasm.mjs
+scichart*.wasm
+
+# playwright
+/playwright-report
+/test-results
+/blob-report
+# only CI's Linux baselines are committed; other platforms' runs stay local
+/tests/__screenshots__/*
+!/tests/__screenshots__/linux/
+
+# demos
+/demos/*/node_modules
+/demos/*/dist
+/demos/*/build
+/demos/*/.svelte-kit
+.github-readme.md.bak

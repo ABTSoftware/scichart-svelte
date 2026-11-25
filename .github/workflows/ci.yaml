@@ -1,0 +1,115 @@
+name: CI
+
+on:
+    pull_request:
+    push:
+        branches:
+            - main
+
+permissions:
+    contents: read
+
+jobs:
+    verify:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v7
+
+            - uses: actions/setup-node@v7
+              with:
+                  node-version: 22
+
+            - name: Install
+              run: npm ci
+
+            - name: Lint
+              run: npm run lint
+
+            # svelte-check over the library, stories, showcase app and the type tests in tests/types
+            - name: Typecheck
+              run: npm run typecheck
+
+            # build ends with verifyLib: artifact layout assertions (Builder Isolation, sideEffects,
+            # export map, wasm default), then publint and attw
+            - name: Build
+              run: npm run build
+
+    # Everything that needs a real browser. The charts are WebAssembly and WebGL, so a browser is
+    # the only place they run.
+    #
+    # Runs inside the official Playwright image, pinned to the @playwright/test version, so the
+    # browser, fonts and system libraries are fixed. This job is the only place the visual
+    # baselines are recorded and judged: screenshots differ slightly between machines, so a
+    # developer's machine never writes them. When the visual test fails, the job re-records the
+    # screenshots and uploads them; if the change is intended, commit them into
+    # tests/__screenshots__/linux/.
+    browser-tests:
+        runs-on: ubuntu-latest
+        container:
+            image: mcr.microsoft.com/playwright:v1.63.0-noble
+        steps:
+            - uses: actions/checkout@v7
+
+            - uses: actions/setup-node@v7
+              with:
+                  node-version: 22
+
+            - name: Install
+              run: npm ci
+
+            # lifecycle callbacks, state classes, every story against its baseline (static Storybook),
+            # then SSR and the memory-leak test against the showcase app's dev server
+            - name: Browser tests
+              run: npm test
+
+            - name: Re-record the visual baselines
+              if: failure()
+              run: npm run update-snapshots
+
+            - if: failure()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: visual-baselines-linux
+                  path: tests/__screenshots__/linux/
+                  retention-days: 7
+
+            - if: failure()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: playwright-report
+                  path: |
+                      playwright-report/
+                      test-results/
+                  retention-days: 7
+
+    # Every demo is its own npm project consuming the built package, so nothing above compiles them.
+    demos:
+        runs-on: ubuntu-latest
+        strategy:
+            # one broken demo should not hide the state of the others
+            fail-fast: false
+            matrix:
+                demo:
+                    - demos/vite-svelte
+                    - demos/sveltekit
+        steps:
+            - uses: actions/checkout@v7
+
+            - uses: actions/setup-node@v7
+              with:
+                  node-version: 22
+                  cache: npm
+
+            # the demos consume the package root as a file: dependency, so dist/ must exist first
+            - name: Install and build the library
+              run: |
+                  npm ci
+                  npm run build
+
+            - name: Install ${{ matrix.demo }}
+              working-directory: ${{ matrix.demo }}
+              run: npm ci
+
+            - name: Build ${{ matrix.demo }}
+              working-directory: ${{ matrix.demo }}
+              run: npm run build

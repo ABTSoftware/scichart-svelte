@@ -1,0 +1,12 @@
+node_modules
+.svelte-kit
+dist
+storybook-static
+playwright-report
+test-results
+tests/__screenshots__/darwin
+tests/__screenshots__/win32
+demos/*/node_modules
+demos/*/.svelte-kit
+demos/*/dist
+demos/*/build

@@ -1,0 +1,135 @@
+{
+    "name": "scichart-svelte",
+    "version": "1.0.0",
+    "description": "Official Svelte 5 component wrapper for SciChart.js. High-performance WebGL/WebGPU charts for real-time data streams and large datasets, with TypeScript support.",
+    "homepage": "https://www.scichart.com/javascript-chart-features/",
+    "author": "SciChart Ltd",
+    "license": "MIT",
+    "keywords": [
+        "scichart-svelte",
+        "svelte",
+        "svelte5",
+        "sveltekit",
+        "svelte-charts",
+        "svelte-chart",
+        "svelte-component",
+        "scichart",
+        "chart",
+        "charts",
+        "javascript-charts",
+        "typescript",
+        "webgl",
+        "webgpu",
+        "high-performance",
+        "real-time",
+        "streaming-data",
+        "big-data",
+        "data-visualization",
+        "scientific-charts",
+        "financial-charts",
+        "3d-charts",
+        "webassembly",
+        "dashboard"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ABTSoftware/scichart-svelte.git"
+    },
+    "bugs": "https://github.com/ABTSoftware/scichart-svelte/issues",
+    "type": "module",
+    "files": [
+        "dist",
+        "!dist/**/*.test.*",
+        "!dist/**/*.spec.*"
+    ],
+    "sideEffects": [
+        "./dist/configureDefaults.js"
+    ],
+    "types": "./dist/index.d.ts",
+    "svelte": "./dist/index.js",
+    "imports": {
+        "#lib": "./src/lib/index.js",
+        "#lib/*": "./src/lib/*"
+    },
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "svelte": "./dist/index.js",
+            "default": "./dist/index.js"
+        },
+        "./package.json": "./package.json",
+        "./*.svelte": {
+            "types": "./dist/*.svelte.d.ts",
+            "svelte": "./dist/*.svelte"
+        },
+        "./*": {
+            "types": "./dist/*.d.ts",
+            "svelte": "./dist/*.js",
+            "default": "./dist/*.js"
+        }
+    },
+    "engines": {
+        "node": ">=22"
+    },
+    "scripts": {
+        "dev": "npm run copyWasm && vite dev",
+        "copyWasm": "node scripts/copy-wasm.mjs static",
+        "build": "rimraf dist && svelte-kit sync && svelte-package && npm run verifyLib",
+        "verifyLib": "tsx scripts/verify-lib.ts && npm run verifyPackage",
+        "verifyPackage": "publint --strict && attw --pack . --profile esm-only --ignore-rules internal-resolution-error",
+        "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
+        "lint": "prettier --check . && eslint . --max-warnings 0",
+        "format": "prettier --write .",
+        "storybook": "storybook dev -p 6006",
+        "build-storybook": "storybook build",
+        "test": "playwright test",
+        "test:stories": "playwright test --project=stories",
+        "test:leak": "playwright test --project=app",
+        "update-snapshots": "playwright test --project=stories --update-snapshots",
+        "test:docker": "docker build -t scichart-svelte-browser-tests -f tests/Dockerfile . && docker run --rm scichart-svelte-browser-tests",
+        "prepack": "node scripts/swap-readme.mjs npm",
+        "postpack": "node scripts/swap-readme.mjs github",
+        "prepare": "svelte-kit sync && husky || echo ''",
+        "pretty-quick": "pretty-quick --staged",
+        "release:latest": "gh workflow run publish.yaml --ref main",
+        "release:alpha": "gh workflow run publish.yaml --ref alpha",
+        "release:beta": "gh workflow run publish.yaml --ref beta",
+        "test:deployed": "playwright test --config playwright.deployed.config.ts"
+    },
+    "peerDependencies": {
+        "scichart": ">=6.0.13",
+        "svelte": "^5.0.0"
+    },
+    "devDependencies": {
+        "@arethetypeswrong/cli": "^0.18.5",
+        "@eslint/js": "^9.39.0",
+        "@playwright/test": "1.63.0",
+        "@storybook/addon-docs": "^10.6.7",
+        "@storybook/sveltekit": "^10.6.7",
+        "@sveltejs/adapter-node": "^6.0.2",
+        "@sveltejs/kit": "^3.2.0",
+        "@sveltejs/package": "^3.0.2",
+        "@sveltejs/vite-plugin-svelte": "^7.3.1",
+        "@types/node": "^22.15.0",
+        "eslint": "^9.39.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-storybook": "^10.6.7",
+        "eslint-plugin-svelte": "^3.24.1",
+        "globals": "^17.14.0",
+        "http-server": "^14.1.1",
+        "husky": "^9.1.7",
+        "prettier": "^3.10.1",
+        "prettier-plugin-svelte": "^4.1.1",
+        "pretty-quick": "^4.2.2",
+        "publint": "^0.3.25",
+        "rimraf": "^6.0.1",
+        "scichart": "6.0.13",
+        "storybook": "^10.6.7",
+        "svelte": "^5.57.3",
+        "svelte-check": "^4.7.8",
+        "tsx": "^4.23.15",
+        "typescript": "~6.0.3",
+        "typescript-eslint": "^8.73.0",
+        "vite": "^8.3.8"
+    }
+}

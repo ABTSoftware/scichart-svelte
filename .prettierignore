@@ -1,0 +1,17 @@
+package-lock.json
+node_modules
+/.svelte-kit
+/build
+/dist
+/storybook-static
+/static
+/demos/*/.svelte-kit
+/demos/*/dist
+/demos/*/build
+/demos/*/node_modules
+/demos/*/package-lock.json
+/demos/*/static
+/demos/*/public
+/playwright-report
+/test-results
+/tests/__screenshots__
